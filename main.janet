@@ -2,7 +2,7 @@
 #
 # https://github.com/raysan5/raylib-games/blob/master/classics/src/tetris.c
 
-(use jaylib)
+(import jaylib :as j)
 
 ###########################################################################
 
@@ -181,7 +181,7 @@
   (var collision false)
   #
   (cond
-    (key-down? :left)
+    (j/key-down? :a)
     (do
       # determine if moving left is possible
       (loop [j :down-to [(- grid-vertical-size 2) 0]]
@@ -202,7 +202,7 @@
               (put-in grid [i j] :empty))))
         (-- piece-position-x)))
     #
-    (key-down? :right)
+    (j/key-down? :d)
     (do
       # determine if moving right is possible
       (loop [j :down-to [(- grid-vertical-size 2) 0]]
@@ -228,7 +228,7 @@
 
 (defn resolve-turn-movement
   []
-  (when (key-down? :up)
+  (when (j/key-down? :w)
     (var aux nil)
     (var checker false)
     #
@@ -543,7 +543,7 @@
   []
   (if (not game-over)
     (do
-      (when (key-pressed? :p)
+      (when (j/key-pressed? :p)
         (set pause (not pause)))
       #
       (when (not pause)
@@ -559,13 +559,13 @@
                 (++ lateral-movement-counter)
                 (++ turn-movement-counter)
                 # arrange for movement if necessary
-                (when (or (key-pressed? :left)
-                          (key-pressed? :right))
+                (when (or (j/key-pressed? :a)
+                          (j/key-pressed? :d))
                   (set lateral-movement-counter lateral-speed))
-                (when (key-pressed? :up)
+                (when (j/key-pressed? :w)
                   (set turn-movement-counter turning-speed))
                 # fall?
-                (when (and (key-down? :down)
+                (when (and (j/key-down? :s)
                            (>= fast-fall-movement-counter
                                fast-fall-await-counter))
                   (+= gravity-movement-counter gravity-speed))
@@ -601,15 +601,15 @@
               (set fade-line-counter 0)
               (set line-to-delete false)
               (++ lines))))))
-    (when (key-pressed? :enter)
+    (when (j/key-pressed? :enter)
       (init-game)
       (set game-over false))))
 
 (defn draw-game
   []
-  (begin-drawing)
+  (j/begin-drawing)
   #
-  (clear-background :dark-green)
+  (j/clear-background :dark-green)
   #
   (if (not game-over)
     (do
@@ -628,42 +628,42 @@
           (case (get-in grid [i j])
             :empty
             (do
-              (draw-line offset-x offset-y
-                         (+ offset-x square-size) offset-y
-                         :light-gray)
-              (draw-line offset-x offset-y
-                         offset-x (+ offset-y square-size)
-                         :light-gray)
-              (draw-line (+ offset-x square-size) offset-y
-                         (+ offset-x square-size) (+ offset-y square-size)
-                         :light-gray)
-              (draw-line offset-x (+ offset-y square-size)
-                         (+ offset-x square-size) (+ offset-y square-size)
-                         :light-gray)
+              (j/draw-line offset-x offset-y
+                           (+ offset-x square-size) offset-y
+                           :light-gray)
+              (j/draw-line offset-x offset-y
+                           offset-x (+ offset-y square-size)
+                           :light-gray)
+              (j/draw-line (+ offset-x square-size) offset-y
+                           (+ offset-x square-size) (+ offset-y square-size)
+                           :light-gray)
+              (j/draw-line offset-x (+ offset-y square-size)
+                           (+ offset-x square-size) (+ offset-y square-size)
+                           :light-gray)
               (+= offset-x square-size))
             #
             :full
             (do
-              (draw-rectangle offset-x offset-y
-                              square-size square-size :black)
+              (j/draw-rectangle offset-x offset-y
+                                square-size square-size :black)
               (+= offset-x square-size))
             #
             :moving
             (do
-              (draw-rectangle offset-x offset-y
-                              square-size square-size :dark-gray)
+              (j/draw-rectangle offset-x offset-y
+                                square-size square-size :dark-gray)
               (+= offset-x square-size))
             #
             :block
             (do
-              (draw-rectangle offset-x offset-y
-                              square-size square-size :light-gray)
+              (j/draw-rectangle offset-x offset-y
+                                square-size square-size :light-gray)
               (+= offset-x square-size))
             #
             :fading
             (do
-              (draw-rectangle offset-x offset-y
-                              square-size square-size fading-color)
+              (j/draw-rectangle offset-x offset-y
+                                square-size square-size fading-color)
               (+= offset-x square-size))
             #
             (eprintf "Unexpected value: %p at %p, %p"
@@ -681,54 +681,54 @@
           (case (get-in incoming-piece [i j])
             :empty
             (do
-              (draw-line offset-x offset-y
-                         (+ offset-x square-size) offset-y
-                         :light-gray)
-              (draw-line offset-x offset-y
-                         offset-x (+ offset-y square-size)
-                         :light-gray)
-              (draw-line (+ offset-x square-size) offset-y
-                         (+ offset-x square-size) (+ offset-y square-size)
-                         :light-gray)
-              (draw-line offset-x (+ offset-y square-size)
-                         (+ offset-x square-size) (+ offset-y square-size)
-                         :light-gray)
+              (j/draw-line offset-x offset-y
+                           (+ offset-x square-size) offset-y
+                           :light-gray)
+              (j/draw-line offset-x offset-y
+                           offset-x (+ offset-y square-size)
+                           :light-gray)
+              (j/draw-line (+ offset-x square-size) offset-y
+                           (+ offset-x square-size) (+ offset-y square-size)
+                           :light-gray)
+              (j/draw-line offset-x (+ offset-y square-size)
+                           (+ offset-x square-size) (+ offset-y square-size)
+                           :light-gray)
               (+= offset-x square-size))
             #
             :moving
             (do
-              (draw-rectangle offset-x offset-y
-                              square-size square-size :gray)
+              (j/draw-rectangle offset-x offset-y
+                                square-size square-size :gray)
               (+= offset-x square-size))))
         (set offset-x controller)
         (+= offset-y square-size))
       #
-      (draw-text "INCOMING:"
-                 offset-x (- offset-y 100)
-                 10 :gray)
+      (j/draw-text "INCOMING:"
+                   offset-x (- offset-y 100)
+                   10 :gray)
       # XXX: `text-format` doesn't exist, so using `string/format`
-      (draw-text (string/format "LINES:      %04i" lines)
-                 offset-x (+ offset-y 20)
-                 10 :gray)
+      (j/draw-text (string/format "LINES:      %04i" lines)
+                   offset-x (+ offset-y 20)
+                   10 :gray)
       (when pause
-        (draw-text "GAME PAUSED"
-                   (- (/ screen-width 2)
-                      (/ (measure-text "GAME PAUSED" 40)
-                         2))
+        (j/draw-text "GAME PAUSED"
+                     (- (/ screen-width 2)
+                        (/ (j/measure-text "GAME PAUSED" 40)
+                           2))
                    (- (/ screen-height 2)
                       40)
                    40 :gray)))
     # XXX: why are `get-screen-width` and `get-screen-height` used here
     #      when they are not above?
-    (draw-text "PRESS [ENTER] TO PLAY AGAIN"
-               (- (/ (get-screen-width) 2)
-                  (/ (measure-text "PRESS [ENTER] TO PLAY AGAIN" 20)
-                     2))
-               (- (/ (get-screen-height) 2)
-                  50)
-               20 :gray))
+    (j/draw-text "PRESS [ENTER] TO PLAY AGAIN"
+                 (- (/ (j/get-screen-width) 2)
+                    (/ (j/measure-text "PRESS [ENTER] TO PLAY AGAIN" 20)
+                       2))
+                 (- (/ (j/get-screen-height) 2)
+                    50)
+                 20 :gray))
   #
-  (end-drawing))
+  (j/end-drawing))
 
 (defn update-draw-frame
   []
@@ -738,20 +738,18 @@
 (defn main
   [& args]
   #
-  (set-config-flags :msaa-4x-hint)
-  (init-window screen-width screen-height "Tetris")
-  (set-target-fps 60)
+  (j/set-config-flags :msaa-4x-hint)
+  (j/init-window screen-width screen-height "Tetris")
+  (j/set-target-fps 60)
   #
-  (set-exit-key 0)
+  (j/set-exit-key 0)
   #
   (init-game)
   #
   (var exit-window false)
   #
-  (while (not exit-window)
-    (set exit-window
-         (window-should-close))
+  (while (not (j/window-should-close))
     (update-draw-frame))
   #
-  (close-window))
+  (j/close-window))
 
