@@ -1,0 +1,24 @@
+Prerequisites:
+
+* janet and jpm
+
+Install dependencies:
+
+$ jpm deps
+
+Start game:
+
+$ janet game.janet
+
+Play game:
+
+* w - rotate piece
+* a - move piece left
+* d - move piece right
+* s - make piece fall faster
+
+Credits:
+
+* bakpakin - janet, jaylib
+* raysan5 - raylib, classics tetris code
+
